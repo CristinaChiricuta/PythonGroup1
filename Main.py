@@ -5,6 +5,7 @@ print("Hi", name, "!")
 
 #import request
 import requests
+import pandas as pd
 url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo'
 r = requests.get(url)
 data = r.json()
