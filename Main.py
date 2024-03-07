@@ -1,15 +1,18 @@
-
-# say hi to user
-name = input("What is your name? ")
-print("Hi", name, "!")
-
-#import request
+#import
 import requests
 import pandas as pd
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo'
+apikey = 'K8ZT1SX0ZU8ZOPPH'
+url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&outputsize=full&apikey={apikey}'
 r = requests.get(url)
 data = r.json()
 print(data)
+
+print(data.keys())
+
+
+
+name = input("What is your name? ")
+print("Hi", name, "!")
 
 stock = input("What is the name of the stock you are interested in? ")
 if not stock:
