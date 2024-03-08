@@ -31,22 +31,8 @@ print(df.head(10))
 
 #2. Asking the user which token they want to select
 
-# stock = input("What is the name of the stock you are interested in? ")
-# if not stock:
-#     print("You did not enter a stock. Please try again.")
-# else:
-#     r = requests.get(f'https://newsapi.org/v2/top-headlines?country={stock}&apiKey={url}')
-#
-# if not data ['2. Symbol']:
-#     print(f"Cannot find the stock: {stock}")
-# else:
-#     for symbol in data['2. Symbol']:
-#         print(symbol['Time Series (5min)'])
-# print(stock)
 
-#price of stock - get last price
-
-#FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
+#3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
 def buy_stocks():
     while True:
         user_input = input("Do you want to buy more stocks? (yes/no): ")
@@ -54,8 +40,7 @@ def buy_stocks():
         if user_input == 'yes':
             symbol = input("Enter the stock symbol: ")
             print(f"You have chosen to buy stocks with symbol: {symbol}")
-            # Add logic for 1. RETRIEVE BUY PRICE + INPUT QUANTITY + WRITE A FUNCTION BUYING PRICE*QUANTITY
-            #function price at point 1()
+            # Add logic of point 1 - call the function
 
         elif user_input == 'no':
             print("Goodbye! Have a great day.")
