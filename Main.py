@@ -5,7 +5,8 @@ import pandas as pd
 
 import requests
 apikey = 'K8ZT1SX0ZU8ZOPPH'
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&outputsize=full&apikey={apikey}'
+symbol = input("What is the name of the stock you are interested in? ")
+url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&outputsize=full&apikey={apikey}'
 r = requests.get(url)
 data = r.json()
 print(data)
@@ -22,10 +23,14 @@ print(df.head(10))
 df.rename(columns = lambda s: s[3:], inplace=True)
 print(df.head(10))
 
+#part 2. buying assets
 
-# name = input("What is your name? ")
-# print("Hi", name, "!")
-#
+#1. Identifyng the user
+name = input("What is your username? ")
+print("Hi", name, "!")
+
+#2. Asking the user which token they want to select
+
 # stock = input("What is the name of the stock you are interested in? ")
 # if not stock:
 #     print("You did not enter a stock. Please try again.")
@@ -38,7 +43,5 @@ print(df.head(10))
 #     for symbol in data['2. Symbol']:
 #         print(symbol['Time Series (5min)'])
 # print(stock)
-#
-# #price of stock - get last price
-#
-# my comment
+
+#price of stock - get last price
