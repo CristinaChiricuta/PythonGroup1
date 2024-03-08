@@ -10,7 +10,7 @@ print("Hi", name, "!")
 
 #Importing the dataset
 #Asking the user which stock they want
-apikey = 'K8ZT1SX0ZU8ZOPPH'
+apikey = '12KH3UIJOSJMJ28S'
 symbol = input("What is the name of the stock you are interested in? ")
 url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&outputsize=full&apikey={apikey}'
 r = requests.get(url)
@@ -45,3 +45,23 @@ print(df.head(10))
 # print(stock)
 
 #price of stock - get last price
+
+#FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
+def buy_stocks():
+    while True:
+        user_input = input("Do you want to buy more stocks? (yes/no): ")
+
+        if user_input == 'yes':
+            symbol = input("Enter the stock symbol: ")
+            print(f"You have chosen to buy stocks with symbol: {symbol}")
+            # Add logic for 1. RETRIEVE BUY PRICE + INPUT QUANTITY + WRITE A FUNCTION BUYING PRICE*QUANTITY
+            #function price at point 1()
+
+        elif user_input == 'no':
+            print("Goodbye! Have a great day.")
+            break
+
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+buy_stocks()
