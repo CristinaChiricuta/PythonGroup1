@@ -52,6 +52,7 @@ def buy_stocks():
             print("This is the price evolution of the the stock you have selected in the past hour: \n",
                   new_stock_prices.head(10))
             new_price = select_price(new_stock_prices)
+            quantity = int(input("How many stocks do you want to buy at the selected price? "))
             total = buying_price(new_price, quantity, new_purchase)
             print(f"The total buying price for the stock {new_purchase} is {total}.")
             return total
@@ -87,10 +88,7 @@ buying_price(selected_price, quantity, symbol)
 #new purchase
 
 #calling if you want to buy more
-new_stock_prices = get_stock_prices(apikey,symbol)
 buy_more = buy_stocks()
-print("This is the price evolution of the the stock you have selected in the past hour: \n", new_stock_prices.head(10))
-quantity = int(input("How many stocks do you want to buy at the selected price? "))
 
 
 
