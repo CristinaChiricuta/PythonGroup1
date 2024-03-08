@@ -38,8 +38,33 @@ def select_price(df):
 def buying_price(price, quantity, symbol):
     total_price = price*quantity
     print(f"The total buying price for the stock {symbol} is {total_price}.")
+    return total_price
 
+#3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
+def buy_stocks():
+    while True:
+        user_input = input("Do you want to buy more stocks? (yes/no): ")
+
+        if user_input == 'yes':
+            new_purchase = input("Enter the stock symbol: ")
+            new_stock_prices = get_stock_prices(apikey,new_purchase)
+            print(f"You have chosen to buy stocks with symbol: {new_purchase}")
+            print("This is the price evolution of the the stock you have selected in the past hour: \n",
+                  new_stock_prices.head(10))
+            new_price = select_price(new_stock_prices)
+            total = buying_price(new_price, quantity, new_purchase)
+            print(f"The total buying price for the stock {new_purchase} is {total}.")
+            return total
+
+        elif user_input == 'no':
+            print("Goodbye! Have a great day.")
+            break
+
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
 #PROGRAM
+
+#first purchase
 
 #Defining what is the symbol
 symbol = input("What is the name of the stock you are interested in? ")
@@ -58,4 +83,14 @@ quantity = int(input("How many stocks do you want to buy at the selected price? 
 
 #Calling the buying_price function with the variables defined above to get the total price of the selected price, quantity and stock (symbol)
 buying_price(selected_price, quantity, symbol)
+
+#new purchase
+
+#calling if you want to buy more
+new_stock_prices = get_stock_prices(apikey,symbol)
+buy_more = buy_stocks()
+print("This is the price evolution of the the stock you have selected in the past hour: \n", new_stock_prices.head(10))
+quantity = int(input("How many stocks do you want to buy at the selected price? "))
+
+
 
