@@ -38,7 +38,7 @@ def select_price(df,  symbol):
     selected_price_type = input("Please select your preferred buying price: ").lower()
     if selected_price_type in df.columns:
         selected_price = df[selected_price_type].iloc[0]
-        print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}$.")
+        print(f"You have selected the {selected_price_type} price of {symbol} with a value of ${selected_price}.")
         return selected_price
     else:
         print("Invalid price type selected.")
@@ -55,8 +55,8 @@ def buying_price(price, quantity, symbol):
         total_balance_portfolio = sum(portfolio[s][2] for s in portfolio)
         print("You have the following stocks in your portfolio:", list(portfolio.keys()))
         for stock in portfolio:
-            print (f"You have bought {round(portfolio[stock][1],2)} stocks of {stock} for the price of {round(portfolio[stock][0],2)}$")
-        print(f'Cash left in your wallet: {round(wallet,2)}$. The total balance of your portfolio is: {round(total_balance_portfolio,2)}$')
+            print (f"You have bought {round(portfolio[stock][1],2)} stocks of {stock} for the price of ${round(portfolio[stock][0],2)}")
+        print(f'Cash left in your wallet: ${round(wallet,2)}. The total balance of your portfolio is: ${round(total_balance_portfolio,2)}')
         return total_price
     else:
         print("You don't have enough money to buy stocks")
@@ -91,13 +91,12 @@ def buy_sell_stocks():
             break
 
         else:
-            print("Invalid input. Please enter 'yes' or 'no'.")
+            print("Invalid input. Please enter 'buy', 'sell', or 'exit'")
 
 
 #Creating a function to sell stocks from the wallet
 def sell_stock(symbol, quantity, stock_prices):
     global wallet
-    print(f"You have {round(wallet,2)}$ amount on your wallet. Please, be aware, you can't sell less, than you have in your wallet")
     if symbol not in portfolio or portfolio[symbol][1] < quantity:
         print(f"Error: Insufficient stocks of {symbol} in the portfolio.")
         return None
@@ -130,10 +129,10 @@ def plot_prices(df, symbol):
     df['average'] = df[['open', 'low', 'high', 'close']].mean(axis=1)
 
     #Resample the DataFrame to hourly frequency and calculate the mean for the hourly averages. The original df is aggregated per hour and then calculates the mean.
-    hourly_average = df.resample('1H').mean()
+    hourly_average = df.resample('1h').mean()
 
     #Extract the date and time from the original DataFrame and add it to hourly_average
-    hourly_average['date_time'] = df.resample('1H').first().index
+    hourly_average['date_time'] = df.resample('1h').first().index
 
     #Interpolate to fill in missing values in the hourly averages and fill the gaps in the plot
     hourly_average = hourly_average.interpolate()
