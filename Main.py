@@ -45,12 +45,18 @@ def select_price(df,  symbol):
 def buying_price(price, quantity, symbol):
     global wallet
     total_price = price * quantity
-    print(f"The total buying price for the stock {symbol} is {total_price}$.")
     portfolio[symbol] = [price, quantity, total_price]
-    wallet = wallet - total_price
-    print(f'Your current portfolio is {portfolio}$.')
-    print(f'You have the following amount on your wallet: {wallet}$.')
-    return total_price
+    if total_price<=wallet:
+        print(f"The total buying price for the stock {symbol} is {round(total_price, 2)}$.")
+        wallet = wallet - total_price
+        total_balance_portfolio = sum(portfolio[s][2] for s in portfolio)
+        print("You have the following stocks in your portfolio:", list(portfolio.keys()))
+        for stock in portfolio:
+            print (f"You have bought {stock} for the following price {round(portfolio[stock][0],2)}, and you have {round(portfolio[stock][1],2)} stocks of {stock} in your portfolio")
+        print(f'You have the following amount left on your wallet: {round(wallet,2)}$. The total balance of your portfolio is {round(total_balance_portfolio,2)}$')
+        return total_price
+    else:
+        print("You don't have enough money to buy stocks")
 
 #3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
 def buy_stocks():
