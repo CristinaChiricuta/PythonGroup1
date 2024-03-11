@@ -2,14 +2,9 @@
 import pandas as pd
 import requests
 
-#Initializing global variable
-wallet = 0
-portfolio = {}
-
 #Identifying the user
 name = input("What is your username? ")
 print("Hi", name, "!")
-wallet = int(input('Please enter your initial deposit: '))
 
 #Importing the dataset with a function, to get the stock prices
 apikey = '12KH3UIJOSJMJ28S'
@@ -30,12 +25,12 @@ def get_stock_prices(apikey, symbol):
 #FUNCTIONS
 
 #Creating a function to select the desired stock prices for the user
-def select_price(df,  symbol):
+def select_price(df, symbol):
     print("The available prices are: open/high/low/close.")
     selected_price_type = input("Please select your preferred buying price: ").lower()
     if selected_price_type in df.columns:
         selected_price = df[selected_price_type].iloc[0]
-        print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}$.")
+        print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}.")
         return selected_price
     else:
         print("Invalid price type selected.")
@@ -43,13 +38,8 @@ def select_price(df,  symbol):
 
 #Creating a function to calculate the total price to buy the selected stocks
 def buying_price(price, quantity, symbol):
-    global wallet
     total_price = price * quantity
-    print(f"The total buying price for the stock {symbol} is {total_price}$.")
-    portfolio[symbol] = [price, quantity, total_price]
-    wallet = wallet - total_price
-    print(f'Your current portfolio is {portfolio}$.')
-    print(f'You have the following amount on your wallet: {wallet}$.')
+    print(f"The total buying price for the stock {symbol} is {total_price}.")
     return total_price
 
 #3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
@@ -76,7 +66,6 @@ def buy_stocks():
 
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
-
 #PROGRAM
 
 #first purchase
