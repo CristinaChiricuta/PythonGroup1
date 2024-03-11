@@ -1,6 +1,9 @@
+#Investing Platform
+
 #Importing packages
 import pandas as pd
 import requests
+import matplotlib.pyplot as plt
 
 #Initializing global variable
 wallet = 0
@@ -58,7 +61,7 @@ def buying_price(price, quantity, symbol):
     else:
         print("You don't have enough money to buy stocks")
 
-#3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
+#Function that asks the user if they want more stocks
 def buy_sell_stocks():
     while True:
         user_input = input("Do you want to buy or sell stocks? (buy/sell/exit): ")
@@ -98,18 +101,18 @@ def sell_stock(symbol, quantity, stock_prices):
         print(f"Error: Insufficient stocks of {symbol} in the portfolio.")
         return None
 
-    # Get the current stock price from the DataFrame
+    #Get the current stock price from the DataFrame
     current_price = stock_prices['close'].iloc[0]
 
-    # Calculate the total selling price
+    #Calculate the total selling price
     total_selling_price = current_price * quantity
 
-    # Update the wallet by adding the total selling price
+    #Update the wallet by adding the total selling price
     wallet += total_selling_price
     total_balance_portfolio = sum(portfolio[s][2] for s in portfolio)
     total_balance_portfolio -= total_selling_price
 
-    # Update the portfolio by subtracting the sold quantity
+    #Update the portfolio by subtracting the sold quantity
     portfolio[symbol][1] -= quantity
 
     print(f"Sold {quantity} stocks of {symbol} at ${current_price} each. Total selling price: ${total_selling_price}")
@@ -122,7 +125,7 @@ def sell_stock(symbol, quantity, stock_prices):
 
 #PROGRAM
 
-#first purchase
+#First purchase
 
 #Defining what is the symbol
 symbol = input("What is the name of the stock you are interested in? ")
@@ -143,7 +146,7 @@ if stock_prices is not None:
     #Calling the buying_price function with the variables defined above to get the total price of the selected price, quantity and stock (symbol)
     buying_price(selected_price, quantity, symbol)
 
-#new purchase
+#New purchase
 
 #calling if you want to buy more
 buy_sell_stocks()
