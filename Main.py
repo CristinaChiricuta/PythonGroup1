@@ -73,6 +73,7 @@ def buy_sell_stocks():
                 print(f"You have chosen to buy stocks with symbol: {new_purchase}")
                 print("This is the price evolution of the the stock you have selected in the past hour: \n",
                       new_stock_prices.head(10))
+                plot_prices(new_stock_prices, new_purchase)
                 new_price = select_price(new_stock_prices, new_purchase)
                 quantity = int(input("How many stocks do you want to buy at the selected price? "))
                 total = buying_price(new_price, quantity, new_purchase)
@@ -93,7 +94,7 @@ def buy_sell_stocks():
             print("Invalid input. Please enter 'yes' or 'no'.")
 
 
-# Creating a function to sell stocks from the wallet
+#Creating a function to sell stocks from the wallet
 def sell_stock(symbol, quantity, stock_prices):
     global wallet
     print(f"You have {round(wallet,2)}$ amount on your wallet. Please, be aware, you can't sell less, than you have in your wallet")
@@ -123,6 +124,35 @@ def sell_stock(symbol, quantity, stock_prices):
         f'You have the following amount left on your wallet: {round(wallet, 2)}$. The total balance of your portfolio is {round(total_balance_portfolio, 2)}$')
     return total_selling_price
 
+#Function to plot the evolution of average stock prices per hour
+def plot_prices(df, symbol):
+    #Calculate the average per row
+    df['average'] = df[['open', 'low', 'high', 'close']].mean(axis=1)
+
+    #Resample the DataFrame to hourly frequency and calculate the mean for the hourly averages. The original df is aggregated per hour and then calculates the mean.
+    hourly_average = df.resample('1H').mean()
+
+    #Extract the date and time from the original DataFrame and add it to hourly_average
+    hourly_average['date_time'] = df.resample('1H').first().index
+
+    #Interpolate to fill in missing values in the hourly averages and fill the gaps in the plot
+    hourly_average = hourly_average.interpolate()
+
+    #Plotting the hourly average prices as a continuous line
+    plt.plot(hourly_average['date_time'], hourly_average['average'], label='Average Price', color='black')
+
+    #Markers for individual prices points
+    plt.scatter(df['high'].idxmax(), df['high'].max(), color='yellow', label='High', marker='o')
+    plt.scatter(df['low'].idxmin(), df['low'].min(), color='blue', label='Low', marker='o')
+
+    #Set x-axis to show the date/time format perpendicular
+    plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
+
+    #Displaying the plot
+    plt.title(f"Average hourly price evolution of {symbol} stocks ($)")
+    plt.legend()
+    plt.show()
+
 #PROGRAM
 
 #First purchase
@@ -133,9 +163,10 @@ symbol = input("What is the name of the stock you are interested in? ")
 #Calling the get_stock_prices function
 stock_prices = get_stock_prices(apikey, symbol)
 
-#Visualizing the latest 10 price changes of the selected stock
+#Visualizing the latest 10 price changes and plot of the selected stock
 if stock_prices is not None:
     print("This is the price evolution of the the stock you have selected in the past hour: \n", stock_prices.head(10))
+    plot_prices(stock_prices,symbol)
 
     #Calling the select_price function to display the price of the selected stock
     selected_price = select_price(stock_prices, symbol)
