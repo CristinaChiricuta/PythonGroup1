@@ -30,7 +30,7 @@ def select_price(df, symbol):
     selected_price_type = input("Please select your preferred buying price: ").lower()
     if selected_price_type in df.columns:
         selected_price = df[selected_price_type].iloc[0]
-        print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}.")
+        print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}$.")
         return selected_price
     else:
         print("Invalid price type selected.")
@@ -39,7 +39,7 @@ def select_price(df, symbol):
 #Creating a function to calculate the total price to buy the selected stocks
 def buying_price(price, quantity, symbol):
     total_price = price * quantity
-    print(f"The total buying price for the stock {symbol} is {total_price}.")
+    print(f"The total buying price for the stock {symbol} is {total_price}$.")
     return total_price
 
 #3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
