@@ -9,7 +9,7 @@ portfolio = {}
 #Identifying the user
 name = input("What is your username? ")
 print("Hi", name, "!")
-wallet = int(input('Please enter your initial deposit: '))
+wallet = int(input('Please enter your initial deposit in $: '))
 
 #Importing the dataset with a function, to get the stock prices
 apikey = '12KH3UIJOSJMJ28S'
@@ -45,19 +45,25 @@ def select_price(df,  symbol):
 def buying_price(price, quantity, symbol):
     global wallet
     total_price = price * quantity
-    print(f"The total buying price for the stock {symbol} is {total_price}$.")
     portfolio[symbol] = [price, quantity, total_price]
-    wallet = wallet - total_price
-    print(f'Your current portfolio is {portfolio}$.')
-    print(f'You have the following amount on your wallet: {wallet}$.')
-    return total_price
+    if total_price<=wallet:
+        print(f"The total buying price for the stock {symbol} is {round(total_price, 2)}$.")
+        wallet = wallet - total_price
+        total_balance_portfolio = sum(portfolio[s][2] for s in portfolio)
+        print("You have the following stocks in your portfolio:", list(portfolio.keys()))
+        for stock in portfolio:
+            print (f"You have bought {round(portfolio[stock][1],2)} stocks of {stock} for the price of {round(portfolio[stock][0],2)}$")
+        print(f'Cash left in your wallet: {round(wallet,2)}$. The total balance of your portfolio is: {round(total_balance_portfolio,2)}$')
+        return total_price
+    else:
+        print("You don't have enough money to buy stocks")
 
 #3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
-def buy_stocks():
+def buy_sell_stocks():
     while True:
-        user_input = input("Do you want to buy more stocks? (yes/no): ")
+        user_input = input("Do you want to buy or sell stocks? (buy/sell/exit): ")
 
-        if user_input == 'yes':
+        if user_input == 'buy':
             new_purchase = input("Enter the stock symbol: ")
             new_stock_prices = get_stock_prices(apikey,new_purchase)
             if new_stock_prices is not None:
@@ -67,15 +73,52 @@ def buy_stocks():
                 new_price = select_price(new_stock_prices, new_purchase)
                 quantity = int(input("How many stocks do you want to buy at the selected price? "))
                 total = buying_price(new_price, quantity, new_purchase)
+        elif user_input == 'sell':
+            symbol_to_sell = input("Enter the stock symbol you want to sell: ")
+            quantity_to_sell = int(input("Enter the quantity of stocks to sell: "))
+            stock_prices_to_sell = get_stock_prices(apikey, symbol_to_sell)
+            if stock_prices_to_sell is not None:
+                sell_stock(symbol_to_sell, quantity_to_sell, stock_prices_to_sell)
             else:
                 continue
 
-        elif user_input == 'no':
+        elif user_input == 'exit':
             print("Goodbye! Have a great day.")
             break
 
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
+
+
+# Creating a function to sell stocks from the wallet
+def sell_stock(symbol, quantity, stock_prices):
+    global wallet
+    print(f"You have {round(wallet,2)}$ amount on your wallet. Please, be aware, you can't sell less, than you have in your wallet")
+    if symbol not in portfolio or portfolio[symbol][1] < quantity:
+        print(f"Error: Insufficient stocks of {symbol} in the portfolio.")
+        return None
+
+    # Get the current stock price from the DataFrame
+    current_price = stock_prices['close'].iloc[0]
+
+    # Calculate the total selling price
+    total_selling_price = current_price * quantity
+
+    # Update the wallet by adding the total selling price
+    wallet += total_selling_price
+    total_balance_portfolio = sum(portfolio[s][2] for s in portfolio)
+    total_balance_portfolio -= total_selling_price
+
+    # Update the portfolio by subtracting the sold quantity
+    portfolio[symbol][1] -= quantity
+
+    print(f"Sold {quantity} stocks of {symbol} at ${current_price} each. Total selling price: ${total_selling_price}")
+    for stock in portfolio:
+        print(
+            f"You have {round(portfolio[stock][1], 2)} stocks of {stock} in your portfolio")
+    print(
+        f'You have the following amount left on your wallet: {round(wallet, 2)}$. The total balance of your portfolio is {round(total_balance_portfolio, 2)}$')
+    return total_selling_price
 
 #PROGRAM
 
@@ -103,4 +146,4 @@ if stock_prices is not None:
 #new purchase
 
 #calling if you want to buy more
-buy_stocks()
+buy_sell_stocks()
