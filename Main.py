@@ -31,11 +31,14 @@ def get_stock_prices(apikey, symbol):
 
 #Creating a function to select the desired stock prices for the user
 def select_price(df,  symbol):
+    global wallet
     print("The available prices are: open/high/low/close.")
     selected_price_type = input("Please select your preferred buying price: ").lower()
     if selected_price_type in df.columns:
         selected_price = df[selected_price_type].iloc[0]
         print(f"You have selected the {selected_price_type} price of {symbol} with a value of {selected_price}$.")
+        print(
+            f"You have {round(wallet, 2)}$ amount on your wallet. Please, be aware, you can't buy stocks for a bigger amount, than you have in your wallet")
         return selected_price
     else:
         print("Invalid price type selected.")
@@ -60,8 +63,9 @@ def buying_price(price, quantity, symbol):
 
 #3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
 def buy_sell_stocks():
+    global wallet
     while True:
-        user_input = input("Do you want to buy or sell stocks? (buy/sell/exit): ")
+        user_input = input("Do you want to buy stocks, sell stocks, or add cash to the wallet? (buy/sell/add cash/exit): ")
 
         if user_input == 'buy':
             new_purchase = input("Enter the stock symbol: ")
@@ -75,25 +79,29 @@ def buy_sell_stocks():
                 total = buying_price(new_price, quantity, new_purchase)
         elif user_input == 'sell':
             symbol_to_sell = input("Enter the stock symbol you want to sell: ")
+            print (f"Now you have {portfolio[symbol_to_sell][1]} stocks of {symbol_to_sell} in your portfolio")
             quantity_to_sell = int(input("Enter the quantity of stocks to sell: "))
             stock_prices_to_sell = get_stock_prices(apikey, symbol_to_sell)
             if stock_prices_to_sell is not None:
                 sell_stock(symbol_to_sell, quantity_to_sell, stock_prices_to_sell)
             else:
                 continue
-
+        elif user_input == 'add cash':
+            print (f"The current amount in your wallet is {round(wallet,2)}$")
+            add_cash = int(input("Please enter the amount of money that you want to add to the wallet: "))
+            wallet += add_cash
+            print (f"Your updated balance in the wallet is {round(wallet)}$")
         elif user_input == 'exit':
             print("Goodbye! Have a great day.")
             break
 
         else:
-            print("Invalid input. Please enter 'yes' or 'no'.")
+            print("Invalid input. Please enter 'buy', 'sell', 'add cash' or 'exit'")
 
 
 # Creating a function to sell stocks from the wallet
 def sell_stock(symbol, quantity, stock_prices):
     global wallet
-    print(f"You have {round(wallet,2)}$ amount on your wallet. Please, be aware, you can't sell less, than you have in your wallet")
     if symbol not in portfolio or portfolio[symbol][1] < quantity:
         print(f"Error: Insufficient stocks of {symbol} in the portfolio.")
         return None
