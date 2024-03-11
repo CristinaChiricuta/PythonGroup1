@@ -1,11 +1,8 @@
-#Creating an investing platform
-
 #Importing packages
 import pandas as pd
 import requests
-import matplotlib.pyplot as plt
 
-#GLOBAL VARIABLES
+#Initializing global variable
 wallet = 0
 portfolio = {}
 
@@ -33,8 +30,7 @@ def get_stock_prices(apikey, symbol):
 #FUNCTIONS
 
 #Creating a function to select the desired stock prices for the user
-def select_price(df, symbol):
-
+def select_price(df,  symbol):
     print("The available prices are: open/high/low/close.")
     selected_price_type = input("Please select your preferred buying price: ").lower()
     if selected_price_type in df.columns:
@@ -56,35 +52,7 @@ def buying_price(price, quantity, symbol):
     print(f'You have the following amount on your wallet: {wallet}$.')
     return total_price
 
-#Creating a function to plot the average prices of the stock per hour
-def plot_average_prices(df, symbol):
-    #Calculate the average per row
-    df['average'] = df[['open', 'low', 'high', 'close']].mean(axis=1)
-
-    #Resample the DataFrame to hourly frequency and calculate the mean for the hourly averages
-    #The mean calculates the mean for each hourly interval: for each hour, the values in the original dataframe are aggregated to give the mean value for the selected hour
-    hourly_average = df.resample('1H').mean()
-
-    #Extract the date and time from the original DataFrame and add it to hourly_average
-    hourly_average['date_time'] = df.resample('1H').first().index
-
-    #Interpolate to fill in missing values in the hourly averages
-    hourly_average = hourly_average.interpolate()
-
-    #Plotting the hourly average prices
-    plt.plot(hourly_average['date_time'], hourly_average['average'], label='Average Price', color='black')
-    plt.scatter(df['high'].idxmax(), df['high'].max(), color='yellow', label='High', marker='o')
-    plt.scatter(df['low'].idxmin(), df['low'].min(), color='blue', label='Low', marker='o')
-
-    #Set x-axis to show values tilted
-    plt.xticks(rotation=45, ha='right', rotation_mode='anchor')
-
-    # Displaying the plot
-    plt.title(f"Hourly Average Prices of {symbol} stocks over time ($)")
-    plt.legend()
-    plt.show()
-
-#Creating a function to buy more stocks if the user wants
+#3. FUNCTION THAT RUNS EVERYTHING AGAIN (DO YOU WANT TO BUY MORE?)
 def buy_stocks():
     while True:
         user_input = input("Do you want to buy more stocks? (yes/no): ")
@@ -96,7 +64,6 @@ def buy_stocks():
                 print(f"You have chosen to buy stocks with symbol: {new_purchase}")
                 print("This is the price evolution of the the stock you have selected in the past hour: \n",
                       new_stock_prices.head(10))
-                plot_average_prices(new_stock_prices, new_purchase)
                 new_price = select_price(new_stock_prices, new_purchase)
                 quantity = int(input("How many stocks do you want to buy at the selected price? "))
                 total = buying_price(new_price, quantity, new_purchase)
@@ -112,7 +79,7 @@ def buy_stocks():
 
 #PROGRAM
 
-#First purchase
+#first purchase
 
 #Defining what is the symbol
 symbol = input("What is the name of the stock you are interested in? ")
@@ -120,10 +87,9 @@ symbol = input("What is the name of the stock you are interested in? ")
 #Calling the get_stock_prices function
 stock_prices = get_stock_prices(apikey, symbol)
 
-#Visualizing the latest 10 price changes and plot of the selected stock
+#Visualizing the latest 10 price changes of the selected stock
 if stock_prices is not None:
     print("This is the price evolution of the the stock you have selected in the past hour: \n", stock_prices.head(10))
-    plot_average_prices(stock_prices, symbol)
 
     #Calling the select_price function to display the price of the selected stock
     selected_price = select_price(stock_prices, symbol)
@@ -134,7 +100,7 @@ if stock_prices is not None:
     #Calling the buying_price function with the variables defined above to get the total price of the selected price, quantity and stock (symbol)
     buying_price(selected_price, quantity, symbol)
 
-#New purchase
+#new purchase
 
-#Calling the function to ask if the user wants to buy more
+#calling if you want to buy more
 buy_stocks()
